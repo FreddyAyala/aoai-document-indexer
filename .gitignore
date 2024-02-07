@@ -1,0 +1,6 @@
+.env
+lib/__pycache__/*
+failed.txt
+processed.txt
+data/*.pdf
+data/*.txt
