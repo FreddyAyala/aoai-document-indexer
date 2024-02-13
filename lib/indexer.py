@@ -15,6 +15,8 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from lib.common import get_encoding_name
 from json import dumps
 
+from lib.data_utils import process_file
+
 def process_pdf(filename, metadata):
     load_dotenv() # take environment variables from .env.
 
@@ -45,61 +47,19 @@ def process_pdf(filename, metadata):
     rts_searchindex = create_search_index(
         recursivetextsplitter_searchindex,
         azure_openai_endpoint,
-        azure_openai_embedding_deployment_id,
+        azure_openai_embedding_deployment_id,   
         azure_openai_key
     )
     search_index_client.create_or_update_index(rts_searchindex)
 
-    print("Created recursive text splitter index")
-
-    loader = PyPDFLoader(filename)
-    pages = loader.load()
-
-    page_content = [page.page_content for page in pages]
-
-    '''plot_chunk_histogram(
-        chunks=page_content,
-        length_fn=len,
-        title="Distribution of page character lengths",
-        xlabel="Page character length",
-        ylabel="Page count")
-    plot_chunk_histogram(
-        chunks=page_content,
-        length_fn=get_token_length,
-        title="Distribution of page token lengths",
-        xlabel="Page token length",
-        ylabel="Page count")'''
-
-    recursive_text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
-       encoding_name=get_encoding_name(),
-       chunk_size=600, 
-       chunk_overlap=125
-    )
-
-    recursive_text_splitter_chunks = recursive_text_splitter.split_documents(pages)
-
-    chunk_content = [chunk.page_content for chunk in recursive_text_splitter_chunks]
-
-    '''plot_chunk_histogram(
-        chunks=chunk_content,
-        length_fn=len,
-        title="Distribution of chunk character lengths",
-        xlabel="Chunk character length")
-    plot_chunk_histogram(
-        chunks=chunk_content,
-        length_fn=get_token_length,
-        title="Distribution of chunk token lengths",
-        xlabel="Chunk token length")
-    '''
-    recursive_text_splitter_embeddings = azure_openai_client.embeddings.create(input=chunk_content, model=azure_openai_embedding_deployment_id)
-    recursive_text_splitter_embeddings = [result.embedding for result in recursive_text_splitter_embeddings.data]
-
-    import urllib.parse
+  
 
     recursive_search_client = search_index_client.get_search_client(recursivetextsplitter_searchindex)
 
     filename_without_extension = os.path.basename(filename).replace(".", "_")
     filename_hash = hashlib.sha256(filename_without_extension.encode()).hexdigest()
+    process_file()
+    
     docs = [
         {
             "parent_id": "0",
@@ -111,6 +71,7 @@ def process_pdf(filename, metadata):
         }
         for i, chunk in enumerate(recursive_text_splitter_chunks)
     ]
+    
 
     recursive_search_client.upload_documents(docs)
     print("Uploaded chunks and embeddings for recursive text splitter")

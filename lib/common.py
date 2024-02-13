@@ -7,7 +7,8 @@ from azure.search.documents.indexes.models import (
     SearchFieldDataType,
     VectorSearch,
     VectorSearchProfile,
-    HnswVectorSearchAlgorithmConfiguration,
+    VectorSearchAlgorithmConfiguration,
+    HnswAlgorithmConfiguration,
     AzureOpenAIEmbeddingSkill,
     SplitSkill
 )
@@ -23,7 +24,7 @@ from azure.search.documents.indexes._generated.models import (
     OutputFieldMappingEntry
 )
 import tiktoken
-import matplotlib.pyplot as plt
+
 import math
 import numpy as np
 
@@ -87,20 +88,23 @@ def create_search_index(index_name, azure_openai_endpoint, azure_openai_embeddin
                 facetable=False,
                 searchable=True,
                 vector_search_dimensions=1536,
-                vector_search_profile="profile"
+                vector_search_profile_name="profile"
             )
         ],
         vector_search=VectorSearch(
             profiles=[
                 VectorSearchProfile(
-                    name="profile",
-                    algorithm="hnsw-algorithm",
-                    vectorizer="azure-openai-vectorizer"
+                    algorithm_configuration_name="myHnsw", 
+                    name="profile",                  
+                    vectorizer="azure-openai-vectorizer",
+                  
                 )
             ],
-            algorithms=[
-                HnswVectorSearchAlgorithmConfiguration(name="hnsw-algorithm")
-            ],
+           algorithms=[  
+                HnswAlgorithmConfiguration(  
+                    name="myHnsw"
+                )
+            ],  
             vectorizers=[
                 AzureOpenAIVectorizer(
                         name="azure-openai-vectorizer",

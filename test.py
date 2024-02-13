@@ -1,6 +1,6 @@
-from dotenv import load_dotenv
+
 from lib.blob import download_blobs
-from lib.indexer import process_pdf
+#from lib.indexer import process_pdf
 import os
 from json import dumps
 import logging
@@ -8,6 +8,7 @@ import traceback
 from lib.log import log_info
 
 from lib.processor import process_files
+from dotenv import load_dotenv
 
 
 try:
@@ -20,6 +21,8 @@ try:
     local_directory = os.path.join(local_directory_name)
     log_info(f"Downloading Files")
     download_blobs(local_directory_name)
+   
+     
     log_info(f"Processing Files")
     process_files(local_directory)
     

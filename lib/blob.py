@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from lib.indexer import process_pdf
+
 import os
 from azure.storage.blob import BlobServiceClient
 from json import dumps

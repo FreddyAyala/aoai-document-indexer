@@ -4,7 +4,11 @@ from json import dumps
 import logging
 import os
 import traceback
-from lib.indexer import process_pdf
+from lib.data_preparation import create_or_update_search_index, upload_documents_to_index
+from lib.data_utils import process_file
+
+from azure.search.documents import SearchClient
+#from lib.indexer import process_pdf
 
 from lib.log import log_info
 
@@ -36,7 +40,24 @@ def process_files(local_directory):
                     log_info(f"File already processed: {file}")
                     continue
                 try:
-                    process_pdf(local_file_path, dumps(metadata))
+                    #process_pdf(local_file_path, dumps(metadata))
+                    result = process_file(file, os.path.join(local_directory),add_embeddings=True)
+                    print("Creating index...")
+                    my_index_name = os.environ["AZURE_SEARCH_INDEX"]
+                    create_or_update_search_index(
+                        service_name=os.environ["AZURE_SEARCH_SERVICE_NAME"],
+                        index_name=my_index_name,
+                        vector_config_name="default",
+                        admin_key=os.environ["AZURE_SEARCH_ADMIN_KEY"],
+                    )
+                    search_client = SearchClient(
+                        endpoint=os.environ["AZURE_SEARCH_SERVICE_ENDPOINT"], credential=os.environ["AZURE_SEARCH_ADMIN_KEY"], index_name=os.environ["AZURE_SEARCH_SERVICE_NAME"]
+                    )
+                  
+                    upload_documents_to_index(service_name=os.environ["AZURE_SEARCH_SERVICE_NAME"],index_name=my_index_name,docs=result[0].chunks,admin_key=os.environ["AZURE_SEARCH_ADMIN_KEY"])
+                    print(f"Index {my_index_name} created.")
+                    
+                    
                     log_info(f"Processing file finished: {file}")
                     
                     # Write processed file information to processed.txt
