@@ -11,16 +11,16 @@ The AOAI Document Indexer is an automated solution designed to download, process
 4.  Install the necessary package dependencies by executing:
     
     ```
-    1pip install -r requirements.txt
-    2
+    pip install -r requirements.txt
+    
     ```
     
 5.  Set up the required environment variables by creating a  `.env`  file with your Azure service credentials.
 6.  Run the tool using the command:
     
     ```
-    1python test.py
-    2
+    python test.py
+    
     ```
     
 
