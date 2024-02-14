@@ -40,23 +40,22 @@ This metadata becomes part of the indexed information and is instrumental in enh
 #### Architecture Overview
 
 ```mermaid
-1flowchart TD
-2    A[Azure Blob Storage<br/>Contains Documents and metadata] -- Download --> B[AOAI Document Indexer]
-3    B -- Text & Metadata Extraction --> C[Azure Document Intelligence<br/>For PDF, DOCX, PPTX content]
-4    B -- Text Embeddings --> D[Azure OpenAI<br/>Generates text embeddings]
-5    B -- Indexing --> E[Azure Cognitive Search<br/>Document search & retrieval]
-6
-7    subgraph Azure Cloud
-8    C
-9    D
-10    E
-11    end
-12
-13    click A "https://portal.azure.com" "Azure Blob Storage"
-14    click C "https://portal.azure.com" "Azure Document Intelligence"
-15    click D "https://portal.azure.com" "Azure OpenAI"
-16    click E "https://portal.azure.com" "Azure Cognitive Search"
-17
+flowchart TD
+    A[Azure Blob Storage<br/>Contains Documents and metadata] -- Download --> B[AOAI Document Indexer]
+    B -- Text & Metadata Extraction --> C[Azure Document Intelligence<br/>For PDF, DOCX, PPTX content]
+    B -- Text Embeddings --> D[Azure OpenAI<br/>Generates text embeddings]
+    B -- Indexing --> E[Azure Cognitive Search<br/>Document search & retrieval]
+
+    subgraph Azure Cloud
+    C
+    D
+    E
+    end
+
+    click A "https://portal.azure.com" "Azure Blob Storage"
+    click C "https://portal.azure.com" "Azure Document Intelligence"
+    click D "https://portal.azure.com" "Azure OpenAI"
+    click E "https://portal.azure.com" "Azure Cognitive Search"
 ```
 
 The diagram above depicts the flow of data and the integration of different Azure services within the AOAI Document Indexer system:
