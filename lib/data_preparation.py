@@ -1,6 +1,7 @@
 """Data Preparation Script for an Azure Cognitive Search Index."""
 import argparse
 import dataclasses
+import hashlib
 import json
 import os
 import subprocess
@@ -265,13 +266,15 @@ def upload_documents_to_index(service_name, index_name, docs, credential=None, u
         raise ValueError("credential and admin_key cannot be None")
     
     to_upload_dicts = []
-
+    
     id = 0
     for d in docs:
+        filename_without_extension = os.path.basename(d.filepath).replace(".", "_")
+        filename_hash = hashlib.sha256(filename_without_extension.encode()).hexdigest()
         if type(d) is not dict:
             d = dataclasses.asdict(d)
         # add id to documents
-        d.update({"@search.action": "upload", "id": str(id)})
+        d.update({"@search.action": "upload", "id": str(f"{filename_hash}_0_0_{id}",)})
         if "contentVector" in d and d["contentVector"] is None:
             del d["contentVector"]
         to_upload_dicts.append(d)

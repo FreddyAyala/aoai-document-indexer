@@ -6,6 +6,7 @@ import os
 import traceback
 from lib.data_preparation import create_or_update_search_index, upload_documents_to_index
 from lib.data_utils import process_file
+import pathlib
 
 from azure.search.documents import SearchClient
 #from lib.indexer import process_pdf
@@ -13,21 +14,24 @@ from azure.search.documents import SearchClient
 from lib.log import log_info
 
 def process_files(local_directory):
+    
     # Calculate total time elapsed
     start_time = datetime.datetime.now()
     # Loop to process downloaded PDF files
     files = os.listdir(local_directory)
     print(files[0])
     for file in files:
-        if file.endswith(".pdf"):
-           
+        file_extension = pathlib.Path(file).suffix
+        if file.endswith(".pdf") or file.endswith(".pptx") or file.endswith(".pptx"):
+            if file.endswith(".pptx") :
+                print("toasty!")
             # Create a local file path for the downloaded file
             local_file_path = os.path.join(local_directory, file)
 
             # Log the processing file path
             log_info(f"Starting processing file: {file}")
             # Read metadata from metadata.txt file
-            metadata_file_path = os.path.join(local_directory, f"{os.path.splitext(file)[0]}.pdf.metadata.txt")
+            metadata_file_path = os.path.join(local_directory, f"{os.path.splitext(file)[0]}{file_extension}.metadata.txt")
             print(metadata_file_path)
             if os.path.exists(metadata_file_path):
                 with open(metadata_file_path, 'r') as metadata_file:
@@ -73,7 +77,7 @@ def process_files(local_directory):
                     write_to_failed_file(failed_info)
 
     # Calculate total files processed
-    total_files_processed = len([file for file in files if file.endswith(".pdf") and is_file_processed(file)])
+    total_files_processed = len([file for file in files if file.endswith(file_extension) and is_file_processed(file)])
 
     
     end_time = datetime.datetime.now()

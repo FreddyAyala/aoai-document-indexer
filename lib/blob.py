@@ -32,7 +32,7 @@ def download_blobs(directory):
 
         # Loop to download PDF files or metadata.txt files
         for blob in blobs:
-            if blob.name.endswith(".pdf") or blob.name.endswith(".metadata.txt"):
+            if blob.name.endswith(".pdf") or blob.name.endswith(".pptx") or blob.name.endswith(".docx") or blob.name.endswith(".metadata.txt"):
                 try:
                     # Create a local file path for the downloaded file
                     local_file_path = os.path.join(local_directory, blob.name)
