@@ -44,7 +44,7 @@ flowchart TD
     A[Azure Blob Storage<br/>Contains Documents and metadata] -- Download --> B[AOAI Document Indexer]
     B -- Text & Metadata Extraction --> C[Azure Document Intelligence<br/>For PDF, DOCX, PPTX content]
     B -- Text Embeddings --> D[Azure OpenAI<br/>Generates text embeddings]
-    B -- Indexing --> E[Azure Cognitive Search<br/>Document search & retrieval]
+    B -- Indexing --> E[Azure Cognitive Search<br/>Document search and retrieval]
 
     subgraph Azure Cloud
     C
@@ -65,6 +65,40 @@ The diagram above depicts the flow of data and the integration of different Azur
 3.  Azure Document Intelligence is utilized for content extraction from documents.
 4.  Azure OpenAI is used to generate text embeddings to enhance semantic search capabilities.
 5.  Azure Cognitive Search is where all the indexed data is stored, allowing for efficient searching and retrieval.
+
+### Process
+
+
+```mermaid
+flowchart TD
+    start((Start)) --> A[Azure Blob Storage<br/>Download Documents and .metadata.txt files]
+    A -- Files Downloaded --> B[Local Processing<br/>Use Azure Document Intelligence<br/>to extract text from documents]
+    B -- Text Extracted --> C[Azure OpenAI<br/>Generate text embeddings]
+    C -- Embeddings Created --> D[Azure Cognitive Search<br/>Upload text and embeddings<br/>to AI Search Index]
+    D -- Data Indexed --> end((End))
+
+    style start fill:#bbf,stroke:#333,stroke-width:2px
+    style end fill:#bbf,stroke:#333,stroke-width:2px
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style B fill:#f96,stroke:#333,stroke-width:2px
+    style C fill:#9f9,stroke:#333,stroke-width:2px
+    style D fill:#6bf,stroke:#333,stroke-width:2px
+
+```
+
+The diagram above illustrates the sequential order of operations executed by the AOAI Document Indexer:
+
+1.  The process begins by downloading the necessary files, which include documentation and associated  `.metadata.txt`  files, from Azure Blob Storage.
+    
+2.  Local processing then takes place where Azure Document Intelligence is utilized to accurately extract text from downloaded documents.
+    
+3.  Upon successful text extraction, Azure OpenAI is engaged to generate the appropriate text embeddings (vectors), which facilitate advanced semantic search capabilities.
+    
+4.  Finally, both the extracted text and generated embeddings are uploaded and indexed within Azure Cognitive Search, creating a rich and searchable dataset that powers the AI search functionality.
+    
+
+This workflow ensures that each step is completed before moving on to the next, guaranteeing that the data is fully prepared and optimized for search before being made available in Azure Cognitive Search.
+
 
 #### Azure AI Integration Detail
 
