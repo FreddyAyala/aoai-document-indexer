@@ -70,20 +70,19 @@ The diagram above depicts the flow of data and the integration of different Azur
 
 
 ```mermaid
-flowchart TD
+flowchart TB
     start((Start)) --> A[Azure Blob Storage<br/>Download Documents and .metadata.txt files]
-    A -- Files Downloaded --> B[Local Processing<br/>Use Azure Document Intelligence<br/>to extract text from documents]
-    B -- Text Extracted --> C[Azure OpenAI<br/>Generate text embeddings]
-    C -- Embeddings Created --> D[Azure Cognitive Search<br/>Upload text and embeddings<br/>to AI Search Index]
-    D -- Data Indexed --> end((End))
+    A -->|Files Downloaded| B[Local Processing<br/>Use Azure Document Intelligence<br/>to extract text]
+    B -->|Text Extracted| C[Azure OpenAI<br/>Generate text embeddings]
+    C -->|Embeddings Created| D[Upload to Azure Cognitive Search<br/>Index text and embeddings]
+    D -->|Data Indexed| End((End))
 
     style start fill:#bbf,stroke:#333,stroke-width:2px
-    style end fill:#bbf,stroke:#333,stroke-width:2px
+    style End fill:#bbf,stroke:#333,stroke-width:2px
     style A fill:#f9f,stroke:#333,stroke-width:2px
     style B fill:#f96,stroke:#333,stroke-width:2px
     style C fill:#9f9,stroke:#333,stroke-width:2px
     style D fill:#6bf,stroke:#333,stroke-width:2px
-
 ```
 
 The diagram above illustrates the sequential order of operations executed by the AOAI Document Indexer:
