@@ -22,7 +22,7 @@ def process_files(local_directory):
     print(files[0])
     for file in files:
         file_extension = pathlib.Path(file).suffix
-        if file.endswith(".pdf") or file.endswith(".pptx") or file.endswith(".pptx"):
+        if file.endswith(".pdf") or file.endswith(".pptx") or file.endswith(".docx"):
             if file.endswith(".pptx") :
                 print("toasty!")
             # Create a local file path for the downloaded file
@@ -53,12 +53,19 @@ def process_files(local_directory):
                         index_name=my_index_name,
                         vector_config_name="default",
                         admin_key=os.environ["AZURE_SEARCH_ADMIN_KEY"],
-                    )
-                    search_client = SearchClient(
-                        endpoint=os.environ["AZURE_SEARCH_SERVICE_ENDPOINT"], credential=os.environ["AZURE_SEARCH_ADMIN_KEY"], index_name=os.environ["AZURE_SEARCH_SERVICE_NAME"]
-                    )
+                    )                  
                   
-                    upload_documents_to_index(service_name=os.environ["AZURE_SEARCH_SERVICE_NAME"],index_name=my_index_name,docs=result[0].chunks,admin_key=os.environ["AZURE_SEARCH_ADMIN_KEY"])
+                    source_url = metadata[0] if metadata and len(metadata) > 0 else ""
+                    tags = metadata[1] if metadata and len(metadata) > 1 else ""
+
+                    upload_documents_to_index(
+                        service_name=os.environ["AZURE_SEARCH_SERVICE_NAME"],
+                        index_name=my_index_name,
+                        docs=result[0].chunks,
+                        admin_key=os.environ["AZURE_SEARCH_ADMIN_KEY"],
+                        sourceurl=source_url,
+                        tags=tags
+                    )
                     print(f"Index {my_index_name} created.")
                     
                     

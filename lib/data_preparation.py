@@ -204,6 +204,16 @@ def create_or_update_search_index(
                 "searchable": True,
             },
             {
+                "name": "sourceurl",
+                "type": "Edm.String",
+                "searchable": True,
+            },
+            {
+                "name": "tags",
+                "type": "Edm.String",
+                "searchable": True,
+            },
+            {
                 "name": "metadata",
                 "type": "Edm.String",
                 "searchable": True,
@@ -261,7 +271,7 @@ def create_or_update_search_index(
     return True
 
 
-def upload_documents_to_index(service_name, index_name, docs, credential=None, upload_batch_size = 50, admin_key=None,subscription_id="", resource_group="" ):
+def upload_documents_to_index(service_name, index_name, docs, credential=None, upload_batch_size = 50, admin_key=None,subscription_id="", resource_group="",sourceurl="",tags="" ):
     if credential is None and admin_key is None:
         raise ValueError("credential and admin_key cannot be None")
     
@@ -273,6 +283,9 @@ def upload_documents_to_index(service_name, index_name, docs, credential=None, u
         filename_hash = hashlib.sha256(filename_without_extension.encode()).hexdigest()
         if type(d) is not dict:
             d = dataclasses.asdict(d)
+        #add metadata
+        d.update({"@search.action": "upload", "sourceurl":sourceurl})
+        d.update({"@search.action": "upload", "tags": tags})
         # add id to documents
         d.update({"@search.action": "upload", "id": str(f"{filename_hash}_0_0_{id}",)})
         if "contentVector" in d and d["contentVector"] is None:

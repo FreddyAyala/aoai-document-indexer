@@ -4,4 +4,7 @@ failed.txt
 processed.txt
 data/*.pdf
 data/*.txt
+data/*.docx
+data/*.pptx
 data/file_example_PPT_1MB.pptx
+venv/*
