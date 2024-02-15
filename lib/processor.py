@@ -14,7 +14,7 @@ from azure.search.documents import SearchClient
 from lib.log import log_info
 
 def process_files(local_directory):
-    
+    total_files_processed = 0
     # Calculate total time elapsed
     start_time = datetime.datetime.now()
     # Loop to process downloaded PDF files
@@ -70,7 +70,7 @@ def process_files(local_directory):
                     
                     
                     log_info(f"Processing file finished: {file}")
-                    
+                    total_files_processed = total_files_processed + 1
                     # Write processed file information to processed.txt
                     processed_info = f"{file}|{hash_file(local_file_path)}|{get_current_date()}\n"
                     write_to_processed_file(processed_info)
@@ -83,8 +83,6 @@ def process_files(local_directory):
                     failed_info = f"{file}|{str(e)}|{get_current_date()}\n"
                     write_to_failed_file(failed_info)
 
-    # Calculate total files processed
-    total_files_processed = len([file for file in files if file.endswith(file_extension) and is_file_processed(file)])
 
     
     end_time = datetime.datetime.now()
